@@ -1,0 +1,58 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "AVERAGE WORKING HOURS BY GENDER",
+    "data": {
+      "url": "https://raw.githubusercontent.com/wenweig/FIT3179/refs/heads/main/data_gender_clean.csv"
+    },
+    "params": [
+      {
+        "name": "category_selection",
+        "value": "All Jobs",
+        "bind": {
+          "input": "select",
+          "options": [
+            "All Jobs",
+            "Employed Full-time",
+            "Employed Part-time"
+          ],
+          "name": "Select Employment Type"
+        }
+      }
+    ],
+    "transform": [
+      {"fold": ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"], "as": ["Year", "Hours"]},
+      {
+        "filter": "(datum.GENDER == category_selection + ' - Male') || (datum.GENDER == category_selection + ' - Female')"
+      }
+    ],
+    "mark": {"type": "line", "point": true},
+    "encoding": {
+      "x": {
+        "field": "Year", 
+        "type": "ordinal", 
+        "title": "Year"
+      },
+      "y": {
+        "field": "Hours", 
+        "type": "quantitative", 
+        "title": "Average Working Hours",
+        "scale": {"domain": [0, 1200000]}
+      },
+      "color": {
+        "field": "GENDER",
+        "type": "nominal",
+        "scale": {
+          "domain": ["All Jobs - Male", "All Jobs - Female", "Employed Full-time - Male", "Employed Full-time - Female", "Employed Part-time - Male", "Employed Part-time - Female"],
+          "range": ["#00308F", "#FF5F15", "#00308F", "#FF5F15", "#00308F", "#FF5F15"]
+        },
+        "title": "Employment Type - Gender"
+      },
+      "tooltip": [
+        {"field": "GENDER", "type": "nominal", "title": "Gender"},
+        {"field": "Hours", "type": "quantitative", "title": "Average Working Hours/Year", "format": ",.0f"},
+        {"field": "Year", "type": "ordinal", "title": "Year"}
+      ]
+    },
+    "width": 700,
+    "height": 400
+  }

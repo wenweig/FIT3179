@@ -1,0 +1,49 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "AVERAGE WORKING HOURS PER EMPLOYMENT TYPE",
+    "data": {
+      "url": "https://raw.githubusercontent.com/wenweig/FIT3179/refs/heads/main/data_gender_clean.csv"
+    },
+    "params": [
+      {
+        "name": "year_selection",
+        "value": 2014,
+        "bind": {
+          "input": "select",
+          "options": [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+          "labels": ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"],
+          "name": "Select Year"
+        }
+      }
+    ],
+    "transform": [
+      {"fold": ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"], "as": ["Year", "Hours"]},
+      {"filter": "datum.Year == year_selection"}
+    ],
+    "mark": "bar",
+    "encoding": {
+      "y": {"field": "GENDER", "type": "nominal", "title": "Employment Type"},
+      "x": {
+        "field": "Hours", 
+        "type": "quantitative", 
+        "title": "Average Working Hours",
+        "scale": {"domain": [0, 2000000]}
+      },
+      "color": {
+        "field": "GENDER",
+        "type": "nominal",
+        "scale": {
+          "domain": ["All Jobs - Male and Female", "All Jobs - Male", "All Jobs - Female", "Employed Full-time - Male and Female", "Employed Full-time - Male", "Employed Full-time - Female", "Employed Part-time - Male and Female", "Employed Part-time - Male", "Employed Part-time - Female"],
+          "range": ["#00308F", "#6699CC", "#FF5F15", "#00308F", "#6699CC", "#FF5F15", "#00308F", "#6699CC", "#FF5F15"]
+        },
+        "legend": null
+      },
+      "tooltip": [
+        {"field": "GENDER", "type": "nominal", "title": "Employment Type"},
+        {"field": "Hours", "type": "quantitative", "title": "Average Working Hours/Year", "format": ",.0f"},
+        {"field": "Year", "type": "nominal", "title": "Year"}
+      ]
+    },
+    "width": 500,
+    "height": 300
+  }

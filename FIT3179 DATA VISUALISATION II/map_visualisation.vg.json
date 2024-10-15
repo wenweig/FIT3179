@@ -1,0 +1,75 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "AVERAGE WORKING HOURS ACROSS AUSTRALIAN REGIONS",
+  "width": 700,
+  "height": 450,
+  "projection": {"type": "equirectangular"},
+  "params": [
+    {
+      "name": "year_selection",
+      "value": 2014,
+      "bind": {
+        "input": "range",
+        "min": 2014,
+        "max": 2024,
+        "step": 1,
+        "name": "Select Year: "
+      }
+    }
+  ],
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/wenweig/FIT3179/refs/heads/main/map.json",
+        "format": {"type": "topojson", "feature": "australia-with-states_782"}
+      },
+      "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/wenweig/FIT3179/refs/heads/main/map.json",
+        "format": {"type": "topojson", "feature": "australia-with-states_782"}
+      },
+      "transform": [
+        {
+          "lookup": "properties.STATE_NAME",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/wenweig/FIT3179/refs/heads/main/data_region_clean.csv"
+            },
+            "key": "REGION",
+            "fields": ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"]
+          }
+        },
+        {
+          "calculate": "datum[year_selection]",
+          "as": "working_hours"
+        }
+      ],
+      "mark": {"type": "geoshape"},
+      "encoding": {
+        "color": {
+          "field": "working_hours",
+          "type": "quantitative",
+          "scale": {
+            "scheme": "blues",
+            "domain": [10000, 700000]
+          },
+          "title": "AVG. WORKING HOURS"
+        },
+        "tooltip": [
+          {"field": "properties.STATE_NAME", "type": "nominal", "title": "Region"},
+          {"field": "working_hours", "type": "quantitative", "title": "Average Working Hours/Year", "format": ",.0f"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "text", "align": "center", "baseline": "bottom", "dy": -10},
+      "encoding": {
+        "text": {"field": "year_selection", "type": "quantitative"},
+        "x": {"value": 400},
+        "y": {"value": 50}
+      }
+    }
+  ]
+}
